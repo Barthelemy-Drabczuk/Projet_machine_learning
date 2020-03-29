@@ -8,20 +8,38 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+/**
+* CS4106 group project, a machine learning algorithm to draw graphs
+* @author: Jinqi Wang
+* @author: Guillaume
+* @author: Barthélémy Drabczuk
+**/
 public class Main {
+
+    /**
+    * for now everything is in the main function, but later pieces will be moved in different functions or objects
+    **/
     public static void main (String [] args) {
+
+        // 4 scanners to get user inputs
         Scanner popSizeEntry = new Scanner(System.in);
         Scanner genNumEntry = new Scanner(System.in);
         Scanner crossOverRateEntry = new Scanner(System.in);
         Scanner mutationRateEntry = new Scanner(System.in);
 
+        // 4 variables, for the 4 user inputs
         int popSize = -1;
         int genNum = -1;
         int crossOverRate = -1;
         int mutationRate = -1;
 
-        int [] paramArr = {popSize, genNum, crossOverRate, mutationRate};
+        //int [] paramArr = {popSize, genNum, crossOverRate, mutationRate};
 
+        /**
+        *
+        * /!\ WORK IN PROGRESS PART /!\
+        *
+        **/
         while (popSize < 0) {
             askPopSize(popSizeEntry);
         }
@@ -29,26 +47,59 @@ public class Main {
         askCrossOverRate(crossOverRateEntry);
         askMutationRate(mutationRateEntry);
 
+        /**
+        *
+        * /!\ END OF WORK IN PROGRESS PART /!\
+        *
+        **/
+
+        /**
+        * Input file reading part
+        **/
+
+        // get the list of link through the input file
         Path inputFile = FileSystems.getDefault ().getPath ("resources", "input.txt");
         ArrayList<String> linksStringVer = new ArrayList<>();
         try {
             Scanner scan = new Scanner (new BufferedReader(Files.newBufferedReader (inputFile, StandardCharsets.UTF_8)));
             while (scan.hasNext()) {
                 String s = scan.nextLine();
+                // get all the file line by line, in order to convert them later in list of int
                 linksStringVer.add(s);
                 // System.out.println (s);
             }
             scan.close();
+
+        /**
+        * End of input file reading part
+        **/
+
+        /**
+        * Convertion part
+        **/
+            // creation of the converted int links
             ArrayList<ArrayList<Integer>> linksIntVer = new ArrayList<>();
+
+            // converting lines into int
             for (int i = 0; i < linksStringVer.size(); ++i) {
                 linksIntVer.add(new ArrayList<Integer>());
                 String[] parts = linksStringVer.get(i).split(" ");
                 linksIntVer.get(i).add(Integer.parseInt(parts[0]));
                 linksIntVer.get(i).add(Integer.parseInt(parts[1]));
             }
+
+        /**
+        * End of convertion part
+        **/
+
 //            for (ArrayList<Integer> arr : linksIntVer) {
 //                System.out.println(arr.toString());
 //            }
+
+            /**
+            * Creation of the adjacency matrix
+            **/
+
             HashMap <Integer, ArrayList<Integer>> adjacencyMatrix = new HashMap<>();
             for (ArrayList<Integer> arr : linksIntVer) {
                 if (!adjacencyMatrix.keySet().isEmpty()){
@@ -76,6 +127,7 @@ public class Main {
         }
     }
 
+    // eeeeeeeeeeew ;( 
     private static void askMutationRate(Scanner mutationRateEntry) {
         int mutationRate;
         System.out.println("Enter mutation rate (0 - 100): ");
