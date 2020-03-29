@@ -16,9 +16,9 @@ import java.util.Scanner;
 **/
 public class Main {
 
-    /**
+    /*
     * for now everything is in the main function, but later pieces will be moved in different functions or objects
-    **/
+    */
     public static void main (String [] args) {
 
         // 4 scanners to get user inputs
@@ -35,11 +35,11 @@ public class Main {
 
         //int [] paramArr = {popSize, genNum, crossOverRate, mutationRate};
 
-        /**
+        /*
         *
         * /!\ WORK IN PROGRESS PART /!\
         *
-        **/
+        */
         while (popSize < 0) {
             askPopSize(popSizeEntry);
         }
@@ -47,15 +47,15 @@ public class Main {
         askCrossOverRate(crossOverRateEntry);
         askMutationRate(mutationRateEntry);
 
-        /**
+        /*
         *
         * /!\ END OF WORK IN PROGRESS PART /!\
         *
-        **/
+        */
 
-        /**
+        /*
         * Input file reading part
-        **/
+        */
 
         // get the list of link through the input file
         Path inputFile = FileSystems.getDefault ().getPath ("resources", "input.txt");
@@ -70,35 +70,35 @@ public class Main {
             }
             scan.close();
 
-        /**
+        /*
         * End of input file reading part
-        **/
+        */
 
-        /**
+        /*
         * Convertion part
-        **/
+        */
             // creation of the converted int links
             ArrayList<ArrayList<Integer>> linksIntVer = new ArrayList<>();
 
             // converting lines into int
             for (int i = 0; i < linksStringVer.size(); ++i) {
-                linksIntVer.add(new ArrayList<Integer>());
+                linksIntVer.add(new ArrayList<>());
                 String[] parts = linksStringVer.get(i).split(" ");
                 linksIntVer.get(i).add(Integer.parseInt(parts[0]));
                 linksIntVer.get(i).add(Integer.parseInt(parts[1]));
             }
 
-        /**
+        /*
         * End of convertion part
-        **/
+        */
 
 //            for (ArrayList<Integer> arr : linksIntVer) {
 //                System.out.println(arr.toString());
 //            }
 
-            /**
+            /*
             * Creation of the adjacency matrix
-            **/
+            */
 
             HashMap <Integer, ArrayList<Integer>> adjacencyMatrix = new HashMap<>();
             for (ArrayList<Integer> arr : linksIntVer) {
@@ -122,6 +122,11 @@ public class Main {
                 }
             }
             System.out.println(adjacencyMatrix.toString());
+
+            /*
+             * End of creation of the adjacency matrix
+             */
+
         } catch (IOException e) {
             e.printStackTrace ();
         }
@@ -129,26 +134,22 @@ public class Main {
 
     // eeeeeeeeeeew ;( 
     private static void askMutationRate(Scanner mutationRateEntry) {
-        int mutationRate;
         System.out.println("Enter mutation rate (0 - 100): ");
-        mutationRate = mutationRateEntry.nextInt();
+        mutationRateEntry.nextInt();
     }
 
     private static void askCrossOverRate(Scanner crossOverRateEntry) {
-        int crossOverRate;
         System.out.println("Enter crossover rate (0 - 100): ");
-        crossOverRate = crossOverRateEntry.nextInt();
+        crossOverRateEntry.nextInt();
     }
 
     private static void askNumberGeneration(Scanner genNumEntry) {
-        int genNum;
         System.out.println("Enter number of generation (positive integer): ");
-        genNum = genNumEntry.nextInt();
+        genNumEntry.nextInt();
     }
 
     private static void askPopSize(Scanner popSizeEntry) {
-        int popSize;
         System.out.println("Enter population size (positive integer): ");
-        popSize = popSizeEntry.nextInt();
+        popSizeEntry.nextInt();
     }
 }
