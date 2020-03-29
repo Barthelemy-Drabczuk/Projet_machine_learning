@@ -132,7 +132,8 @@ public class Main {
         }
     }
 
-    // eeeeeeeeeeew ;( 
+    // eeeeeeeeeeew ;(
+    // TODO: change the functions in order to have a loop while the parameters are not correct
     private static void askMutationRate(Scanner mutationRateEntry) {
         System.out.println("Enter mutation rate (0 - 100): ");
         mutationRateEntry.nextInt();
