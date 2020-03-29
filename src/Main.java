@@ -21,11 +21,8 @@ public class Main {
     */
     public static void main (String [] args) {
 
-        // 4 scanners to get user inputs
-        Scanner popSizeEntry = new Scanner(System.in);
-        Scanner genNumEntry = new Scanner(System.in);
-        Scanner crossOverRateEntry = new Scanner(System.in);
-        Scanner mutationRateEntry = new Scanner(System.in);
+        // scanner to get user inputs
+        Scanner in = new Scanner(System.in);
 
         // 4 variables, for the 4 user inputs
         int popSize = -1;
@@ -33,24 +30,17 @@ public class Main {
         int crossOverRate = -1;
         int mutationRate = -1;
 
-        //int [] paramArr = {popSize, genNum, crossOverRate, mutationRate};
-
         /*
-        *
-        * /!\ WORK IN PROGRESS PART /!\
-        *
+        * Getting user input part
         */
-        while (popSize < 0) {
-            askPopSize(popSizeEntry);
-        }
-        askNumberGeneration(genNumEntry);
-        askCrossOverRate(crossOverRateEntry);
-        askMutationRate(mutationRateEntry);
+
+        while (popSize < 0) popSize = askPopSize(in);
+        while (genNum < 0) genNum = askNumberGeneration(in);
+        while (crossOverRate < 0  || crossOverRate > 100) crossOverRate = askCrossOverRate(in);
+        while (mutationRate < 0 || mutationRate > 100) mutationRate = askMutationRate(in);
 
         /*
-        *
-        * /!\ END OF WORK IN PROGRESS PART /!\
-        *
+        * End of getting user input part
         */
 
         /*
@@ -75,7 +65,7 @@ public class Main {
         */
 
         /*
-        * Convertion part
+        * Conversion part
         */
             // creation of the converted int links
             ArrayList<ArrayList<Integer>> linksIntVer = new ArrayList<>();
@@ -89,7 +79,7 @@ public class Main {
             }
 
         /*
-        * End of convertion part
+        * End of conversion part
         */
 
 //            for (ArrayList<Integer> arr : linksIntVer) {
@@ -132,25 +122,23 @@ public class Main {
         }
     }
 
-    // eeeeeeeeeeew ;(
-    // TODO: change the functions in order to have a loop while the parameters are not correct
-    private static void askMutationRate(Scanner mutationRateEntry) {
+    private static int askMutationRate(Scanner scan) {
         System.out.println("Enter mutation rate (0 - 100): ");
-        mutationRateEntry.nextInt();
+        return scan.nextInt();
     }
 
-    private static void askCrossOverRate(Scanner crossOverRateEntry) {
+    private static int askCrossOverRate(Scanner scan) {
         System.out.println("Enter crossover rate (0 - 100): ");
-        crossOverRateEntry.nextInt();
+        return scan.nextInt();
     }
 
-    private static void askNumberGeneration(Scanner genNumEntry) {
+    private static int askNumberGeneration(Scanner scan) {
         System.out.println("Enter number of generation (positive integer): ");
-        genNumEntry.nextInt();
+        return scan.nextInt();
     }
 
-    private static void askPopSize(Scanner popSizeEntry) {
+    private static int askPopSize(Scanner scan) {
         System.out.println("Enter population size (positive integer): ");
-        popSizeEntry.nextInt();
+        return scan.nextInt();
     }
 }
