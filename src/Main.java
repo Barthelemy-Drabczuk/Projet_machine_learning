@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -25,7 +26,7 @@ public class Main {
         Scanner in = new Scanner(System.in);
 
         // 4 variables, for the 4 user inputs
-        int popSize = -1;
+        int popSize = 20;
         int genNum = -1;
         int crossOverRate = -1;
         int mutationRate = -1;
@@ -38,6 +39,8 @@ public class Main {
         while (genNum < 0) genNum = askNumberGeneration(in);
         while (crossOverRate < 0  || crossOverRate > 100) crossOverRate = askCrossOverRate(in);
         while (mutationRate < 0 || mutationRate > 100) mutationRate = askMutationRate(in);
+
+        in.close();
 
         /*
         * End of getting user input part
@@ -56,7 +59,6 @@ public class Main {
                 String s = scan.nextLine();
                 // get all the file line by line, in order to convert them later in list of int
                 linksStringVer.add(s);
-                // System.out.println (s);
             }
             scan.close();
 
@@ -82,10 +84,6 @@ public class Main {
         * End of conversion part
         */
 
-//            for (ArrayList<Integer> arr : linksIntVer) {
-//                System.out.println(arr.toString());
-//            }
-
             /*
             * Creation of the adjacency matrix
             */
@@ -93,29 +91,44 @@ public class Main {
             HashMap <Integer, ArrayList<Integer>> adjacencyMatrix = new HashMap<>();
             for (ArrayList<Integer> arr : linksIntVer) {
                 if (!adjacencyMatrix.keySet().isEmpty()){
-                    //System.out.println("matrix not empty: " + adjacencyMatrix.toString());
                     if (!adjacencyMatrix.containsKey(arr.get(0))) {
                         adjacencyMatrix.put(arr.get(0), new ArrayList<>());
-                        adjacencyMatrix.get(arr.get(0)).add(arr.get(1));
-                        System.out.println("matrix new key: " + adjacencyMatrix.toString());
-                    }
-                    else {
-                        adjacencyMatrix.get(arr.get(0)).add(arr.get(1));
-                        System.out.println("matrix new value: " + adjacencyMatrix.toString());
                     }
                 }
                 else {
-                    System.out.println(arr.toString());
                     adjacencyMatrix.put(arr.get(0), new ArrayList<>());
-                    adjacencyMatrix.get(arr.get(0)).add(arr.get(1));
-                    System.out.println("matrix first entry: " + adjacencyMatrix.toString());
                 }
+                adjacencyMatrix.get(arr.get(0)).add(arr.get(1));
             }
             System.out.println(adjacencyMatrix.toString());
 
             /*
              * End of creation of the adjacency matrix
              */
+
+            /*
+             * Initialisation of the first currentPopulation
+             */
+
+            ArrayList<ArrayList<Integer>> currentPopulation = new ArrayList<>();
+
+            ArrayList<Integer> nodes = new ArrayList<>();
+            for (int n = 1; n < adjacencyMatrix.keySet().size() + 1; ++n) {
+                nodes.add(n);
+            }
+
+            for (int i = 0; i < popSize; ++i) {
+                nodes = shuffle(nodes);
+                currentPopulation.add(nodes);
+            }
+
+            System.out.println(currentPopulation.toString());
+
+            /*
+             * End of initialisation of the first currentPopulation
+             */
+
+            ArrayList<ArrayList<Integer>> nextPopulation = new ArrayList<>();
 
         } catch (IOException e) {
             e.printStackTrace ();
@@ -140,5 +153,19 @@ public class Main {
     private static int askPopSize(Scanner scan) {
         System.out.println("Enter population size (positive integer): ");
         return scan.nextInt();
+    }
+
+    //Knuth shuffle : https://en.wikipedia.org/wiki/Fisher-Yates_shuffle
+    private static ArrayList<Integer> shuffle (ArrayList<Integer> ar) {
+        Random rn = new Random();
+
+        for (int i = ar.size() - 1; i > 0; --i){
+            int index = rn.nextInt(i + 1);
+            Integer a = ar.get(index);
+            ar.set(index, ar.get(i));
+            ar.set(i, a);
+        }
+
+        return new ArrayList<>(ar);
     }
 }
