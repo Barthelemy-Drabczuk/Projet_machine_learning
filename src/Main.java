@@ -19,7 +19,7 @@ public class Main {
         Scanner in = new Scanner(System.in);
 
         // 4 variables, for the 4 user inputs
-        int popSize = 20; //-1;
+        int popSize = -1;
         int genNum = -1;
         int crossOverRate = -1;
         int mutationRate = -1;
@@ -28,10 +28,10 @@ public class Main {
         * Getting user input part
         */
 
-//        while (popSize < 0) popSize = askPopSize(in);
-//        while (genNum < 0) genNum = askNumberGeneration(in);
-//        while (crossOverRate < 0  || crossOverRate > 100) crossOverRate = askCrossOverRate(in);
-//        while (mutationRate < 0 || mutationRate > 100) mutationRate = askMutationRate(in);
+        while (popSize < 0) popSize = askPopSize(in);
+        while (genNum < 0) genNum = askNumberGeneration(in);
+        while (crossOverRate < 0  || crossOverRate > 100) crossOverRate = askCrossOverRate(in);
+        while ( (mutationRate < 0 || mutationRate > 100) && crossOverRate + mutationRate <= 100) mutationRate = askMutationRate(in);
 
         in.close();
 
@@ -50,26 +50,98 @@ public class Main {
             nodes.add(n);
         }
 
+        //shuffle the first order to get new ones and create first population
         for (int i = 0; i < popSize; ++i) {
             nodes = shuffle(nodes);
             currentPopulation.add(nodes);
         }
 
+        System.out.println(adjacencyMatrix.toString());
         System.out.println(currentPopulation.toString());
 
         /*
         * End of initialisation of the first currentPopulation
         */
 
-        PriorityQueue<ArrayList<Integer>> populationRanking = new PriorityQueue<>(new Comparator<ArrayList<Integer>>() {
-            @Override
-            public int compare(ArrayList<Integer> o1, ArrayList<Integer> o2) {
-                return fitness (o2) - fitness (o1);
-            }
-        });
+        for (int generation = 0; generation < genNum; ++generation) {
+            /*
+             * Creation of the next population
+             */
 
-        ArrayList<ArrayList<Integer>> nextPopulation = new ArrayList<>();
-    }
+            PriorityQueue<ArrayList<Integer>> populationRanking = new PriorityQueue<>(new Comparator<ArrayList<Integer>>() {
+                @Override
+                public int compare(ArrayList<Integer> o1, ArrayList<Integer> o2) {
+                    return fitness(o2) - fitness(o1);
+                }
+            });
+
+            /*
+             * Increasing number of good ordering
+             */
+
+            populationRanking.addAll(currentPopulation);
+            ArrayList<GeneticArray> orderedPop = new ArrayList<>();
+
+            for (int i = 0; i < populationRanking.size(); ++i){
+                orderedPop.add(GeneticArray.fromArrayList(populationRanking.poll()));
+            }
+
+            //indexes of the end of population s2
+            int lastS2Index = (populationRanking.size() * 2) / 3;
+
+            //replacement of s3 population by s1 population
+            for (int i = lastS2Index; i < orderedPop.size(); ++i) {
+                orderedPop.set(i, orderedPop.get(i - lastS2Index));
+            }
+
+            /*
+             * End of increasing number of good ordering
+             */
+
+            ArrayList<GeneticArray> nextPopulation = new ArrayList<>();
+
+            while (!nextPopulation.equals(popSize)) {
+                Random rn = new Random();
+                int pr = rn.nextInt(100);
+
+                //crossover
+                if (crossOverRate >= pr) {
+                    //picking 2 candidates
+                    GeneticArray firstOne = orderedPop.get(rn.nextInt(orderedPop.size()));
+                    GeneticArray secondOne = orderedPop.get(rn.nextInt(orderedPop.size()));
+
+                    //crossover process
+                    firstOne.crossOverWith(secondOne);
+
+                    //adding to new population and removing from the current one
+                    nextPopulation.add(firstOne);
+                    orderedPop.remove(firstOne);
+                    nextPopulation.add(secondOne);
+                    orderedPop.remove(secondOne);
+                }
+                //mutates
+                else if (crossOverRate <= pr && pr <= (crossOverRate + mutationRate)) {
+                    GeneticArray selected = orderedPop.get(rn.nextInt(orderedPop.size() - 1));
+                    selected.mutate();
+                    nextPopulation.add(selected);
+                    orderedPop.remove(selected);
+                }
+                //reproduction
+                else if (crossOverRate == mutationRate && crossOverRate <= pr) {
+                    GeneticArray selected = orderedPop.get(rn.nextInt(orderedPop.size() - 1));
+                    nextPopulation.add(selected);
+                    orderedPop.remove(selected);
+                }
+            }
+
+        }
+
+    }//main
+
+
+    /*
+    * Utility functions
+    */
 
     private static int fitness(ArrayList<Integer> ar) {
         /*
@@ -123,27 +195,27 @@ public class Main {
         }
 
         return (int) (totAvg/ar.size()) * 100;
-    }
+    }//fitness
 
     private static int askMutationRate(Scanner scan) {
         System.out.println("Enter mutation rate (0 - 100): ");
         return scan.nextInt();
-    }
+    }//askMutationRate
 
     private static int askCrossOverRate(Scanner scan) {
         System.out.println("Enter crossover rate (0 - 100): ");
         return scan.nextInt();
-    }
+    }//askCrossOverRate
 
     private static int askNumberGeneration(Scanner scan) {
         System.out.println("Enter number of generation (positive integer): ");
         return scan.nextInt();
-    }
+    }//askNumberGeneration
 
     private static int askPopSize(Scanner scan) {
         System.out.println("Enter population size (positive integer): ");
         return scan.nextInt();
-    }
+    }//askPopSize
 
     //Knuth shuffle : https://en.wikipedia.org/wiki/Fisher-Yates_shuffle
     private static ArrayList<Integer> shuffle (ArrayList<Integer> ar) {
@@ -157,5 +229,9 @@ public class Main {
         }
 
         return new ArrayList<>(ar);
-    }
-}
+    }//shuffle
+
+    /*
+     * End of utility functions
+     */
+}//Main
