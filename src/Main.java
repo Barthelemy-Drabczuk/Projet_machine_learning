@@ -3,7 +3,7 @@ import java.util.*;
 /**
 * CS4106 group project, a machine learning algorithm to draw graphs
 * @author: Jinqi Wang
-* @author: Guillaume
+* @author: Guillaume Humbert
 * @author: Barthélémy Drabczuk
 **/
 public class Main {
@@ -72,11 +72,13 @@ public class Main {
     }
 
     private static int fitness(ArrayList<Integer> ar) {
-        final double CHUNK = (2 * Math.PI) / (ar.size() + 1);
-
         /*
         * Calculation of coordinates for every node in the graph
+        * cf: paper subject
         */
+
+        //Chunk size for the particular order
+        final double CHUNK = (2 * Math.PI) / (ar.size() + 1);
 
         ArrayList<ArrayList<Double>> coordinates = new ArrayList<>();
 
@@ -86,9 +88,41 @@ public class Main {
             coordinates.get(i).add(Math.sin( (double) i * CHUNK));
         }
 
+        HashMap<Integer, ArrayList<Double>> nodeCoordinates = new HashMap<>();
+        int count = 0;
+        for (Integer i : ar) {
+            nodeCoordinates.put(i, coordinates.get(count));
+            count++;
+        }
 
+        ArrayList<Integer> avgDistForNodes = new ArrayList<>(ar.size());
 
-        return 0;
+        double totAvg = 0;
+
+        for (int i = 0; i < avgDistForNodes.size(); ++i) {
+            double avg = 0;
+
+            //x,y coordinates of current node
+            double nodeX = nodeCoordinates.get(ar.get(i)).get(0);
+            double nodeY = nodeCoordinates.get(ar.get(i)).get(1);
+
+            for (int link = 0; link < adjacencyMatrix.get(i).size(); ++link) {
+                // add to the average the distance to every node for the current node
+                avg += Math.sqrt
+                        ( Math.pow(
+                                (nodeCoordinates.get(adjacencyMatrix.get(i).get(link)).get(0) - nodeX) , 2
+                        )
+                                + Math.pow(
+                                        (nodeCoordinates.get(adjacencyMatrix.get(i).get(link)).get(1) - nodeY), 2
+                        )
+                );
+            }
+            // divide the average distances by the number of links
+            avg /= adjacencyMatrix.get(i).size();
+            totAvg += avg;
+        }
+
+        return (int) (totAvg/ar.size()) * 100;
     }
 
     private static int askMutationRate(Scanner scan) {
