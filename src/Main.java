@@ -1,3 +1,5 @@
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -35,6 +37,9 @@ public class Main {
 
         in.close();
 
+        //init timer for comparison purpose
+        Instant firstStart = Instant.now();
+
         /*
         * End of getting user input part
         */
@@ -46,14 +51,43 @@ public class Main {
 
         //subject fitness function
         fitnessNumberOne(genNum, crossOverRate, mutationRate, currentPopulation);
+        //end of the timer
+        Instant firstEnd = Instant.now();
+
+        //duration of the first fitness function
+        Duration firstDuration = Duration.between(firstStart, firstEnd);
 
         //fitness function of adaptive computing design and manufacture 1998 p325
+
+        Instant secondStart = Instant.now();
+
         ArrayList<ArrayList<Integer>> newPopulation = seedPopulation(popSize);
         ArrayList<GeneticArray> geneticPop = new ArrayList<>();
 
         for (ArrayList<Integer> val : newPopulation)
             geneticPop.add(GeneticArray.fromArrayList(val));
 
+        fitnessNumberTwo(popSize, genNum, geneticPop);
+
+        //end of second timer
+        Instant secondEnd = Instant.now();
+
+        Duration secondDuration = Duration.between(secondStart, secondEnd);
+
+        if (firstDuration.compareTo(secondDuration) > 0) {
+            System.out.println("first function is longer !");
+        }
+        else if (firstDuration.compareTo(secondDuration) < 0) {
+            System.out.println("second function is longer !");
+        }
+        else {
+            System.out.println("Same duration for both functions !");
+        }
+
+
+    }//main
+
+    private static void fitnessNumberTwo(int popSize, int genNum, ArrayList<GeneticArray> geneticPop) {
         for (int generation = 0; generation < genNum; ++generation) {
             for (int i = 0; i < popSize; ++i)
                 //really hard to implement
@@ -63,8 +97,7 @@ public class Main {
             for (int k = 0; k < popSize; ++k)
                 geneticPop.get(k).mutate();
         }
-
-    }//main
+    }
 
     private static double evaluationFitness(ArrayList<Integer> integers) {
         return 0.0;
