@@ -38,31 +38,39 @@ public class Main {
         /*
         * End of getting user input part
         */
-
-        /*
-        * Initialisation of the first currentPopulation
-        */
-
-        ArrayList<ArrayList<Integer>> currentPopulation = new ArrayList<>();
-
-        ArrayList<Integer> nodes = new ArrayList<>();
-        for (int n = 1; n < adjacencyMatrix.keySet().size() + 1; ++n) {
-            nodes.add(n);
-        }
-
-        //shuffle the first order to get new ones and create first population
-        for (int i = 0; i < popSize; ++i) {
-            nodes = shuffle(nodes);
-            currentPopulation.add(nodes);
-        }
-
-        System.out.println(adjacencyMatrix.toString());
-        System.out.println(currentPopulation.toString());
+        ArrayList<ArrayList<Integer>> currentPopulation = seedPopulation(popSize);
 
         /*
         * End of initialisation of the first currentPopulation
         */
 
+        //subject fitness function
+        fitnessNumberOne(genNum, crossOverRate, mutationRate, currentPopulation);
+
+        //fitness function of adaptive computing design and manufacture 1998 p325
+        ArrayList<ArrayList<Integer>> newPopulation = seedPopulation(popSize);
+        ArrayList<GeneticArray> geneticPop = new ArrayList<>();
+
+        for (ArrayList<Integer> val : newPopulation)
+            geneticPop.add(GeneticArray.fromArrayList(val));
+
+        for (int generation = 0; generation < genNum; ++generation) {
+            for (int i = 0; i < popSize; ++i)
+                //really hard to implement
+                // evaluationFitness (geneticPop.get(i));
+            for (int j = 0; j < popSize; j += 2)
+                geneticPop.get(j).crossOverWith(geneticPop.get(j + 1));
+            for (int k = 0; k < popSize; ++k)
+                geneticPop.get(k).mutate();
+        }
+
+    }//main
+
+    private static double evaluationFitness(ArrayList<Integer> integers) {
+        return 0.0;
+    }
+
+    private static void fitnessNumberOne(int genNum, int crossOverRate, int mutationRate, ArrayList<ArrayList<Integer>> currentPopulation) {
         for (int generation = 0; generation < genNum; ++generation) {
             /*
              * Creation of the next population
@@ -185,8 +193,30 @@ public class Main {
 
         // Graphical visualisation
         GraphVisualisation visualisation = new GraphVisualisation(currentPopulationMatrix, currentPopulationMatrix[0], currentPopulationMatrix[0].length - 1);
+    }
 
-    }//main
+    private static ArrayList<ArrayList<Integer>> seedPopulation(int popSize) {
+        /*
+        * Initialisation of the first currentPopulation
+        */
+
+        ArrayList<ArrayList<Integer>> currentPopulation = new ArrayList<>();
+
+        ArrayList<Integer> nodes = new ArrayList<>();
+        for (int n = 1; n < adjacencyMatrix.keySet().size() + 1; ++n) {
+            nodes.add(n);
+        }
+
+        //shuffle the first order to get new ones and create first population
+        for (int i = 0; i < popSize; ++i) {
+            nodes = shuffle(nodes);
+            currentPopulation.add(nodes);
+        }
+
+        System.out.println(adjacencyMatrix.toString());
+        System.out.println(currentPopulation.toString());
+        return currentPopulation;
+    }
 
 
     /*
