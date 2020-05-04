@@ -19,19 +19,19 @@ public class Main {
         Scanner in = new Scanner(System.in);
 
         // 4 variables, for the 4 user inputs
-        int popSize = -1;
-        int genNum = -1;
-        int crossOverRate = -1;
-        int mutationRate = -1;
+        int popSize = 20;
+        int genNum = 20;
+        int crossOverRate = 40;
+        int mutationRate = 60;
 
         /*
         * Getting user input part
         */
 
-        while (popSize < 0) popSize = askPopSize(in);
-        while (genNum < 0) genNum = askNumberGeneration(in);
-        while (crossOverRate < 0  || crossOverRate > 100) crossOverRate = askCrossOverRate(in);
-        while ( (mutationRate < 0 || mutationRate > 100) && crossOverRate + mutationRate <= 100) mutationRate = askMutationRate(in);
+//        while (popSize < 0) popSize = askPopSize(in);
+//        while (genNum < 0) genNum = askNumberGeneration(in);
+//        while (crossOverRate < 0  || crossOverRate > 100) crossOverRate = askCrossOverRate(in);
+//        while ( (mutationRate < 0 || mutationRate > 100) && crossOverRate + mutationRate <= 100) mutationRate = askMutationRate(in);
 
         in.close();
 
@@ -100,31 +100,69 @@ public class Main {
 
             ArrayList<GeneticArray> nextPopulation = new ArrayList<>();
 
-            while (!nextPopulation.equals(popSize)) {
+            while (orderedPop.size() >= 0) {
                 Random rn = new Random();
                 int pr = rn.nextInt(100);
 
                 //crossover
                 if (crossOverRate >= pr) {
-                    //picking 2 candidates
-                    GeneticArray firstOne = orderedPop.get(rn.nextInt(orderedPop.size()));
-                    GeneticArray secondOne = orderedPop.get(rn.nextInt(orderedPop.size()));
+                    if (orderedPop.size() >= 3) {
+                        //picking 2 candidates
+                        GeneticArray firstOne = orderedPop.get(rn.nextInt(orderedPop.size() - 1));
+                        orderedPop.remove(firstOne);
+                        GeneticArray secondOne = orderedPop.get(rn.nextInt(orderedPop.size() - 1));
+                        orderedPop.remove(secondOne);
 
-                    //crossover process
-                    firstOne.crossOverWith(secondOne);
+                        //crossover process
+                        try {
+                            firstOne.crossOverWith(secondOne);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
-                    //adding to new population and removing from the current one
-                    nextPopulation.add(firstOne);
-                    orderedPop.remove(firstOne);
-                    nextPopulation.add(secondOne);
-                    orderedPop.remove(secondOne);
+                        //adding to new population
+                        nextPopulation.add(firstOne);
+                        nextPopulation.add(secondOne);
+                    }
+                    else if (orderedPop.size() > 0){
+                        //in case there is only one member left
+                        GeneticArray lastOne = orderedPop.get(0);
+                        orderedPop.remove(lastOne);
+                        try {
+                            lastOne.crossOverWith(lastOne);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else {
+                        break;
+                    }
                 }
                 //mutates
                 else if (crossOverRate <= pr && pr <= (crossOverRate + mutationRate)) {
-                    GeneticArray selected = orderedPop.get(rn.nextInt(orderedPop.size() - 1));
-                    selected.mutate();
-                    nextPopulation.add(selected);
-                    orderedPop.remove(selected);
+                    if (orderedPop.size() >= 2) {
+                        GeneticArray selected = orderedPop.get(rn.nextInt(orderedPop.size() - 1));
+                        orderedPop.remove(selected);
+                        try {
+                            selected.mutate();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        nextPopulation.add(selected);
+                    }
+                    else if (orderedPop.size() > 0){
+                        GeneticArray lastOne = orderedPop.get(0);
+                        orderedPop.remove(lastOne);
+                        try {
+                            lastOne.mutate();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        nextPopulation.add(lastOne);
+                    }
+                    else {
+                        break;
+                    }
                 }
                 //reproduction
                 else if (crossOverRate == mutationRate && crossOverRate <= pr) {

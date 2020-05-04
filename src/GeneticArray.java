@@ -18,7 +18,7 @@ public class GeneticArray extends ArrayList<Integer> {
         super(c);
     }
 
-    public void crossOverWith (GeneticArray ga) {
+    public void crossOverWith (GeneticArray ga) throws IndexOutOfBoundsException {
         if (!this.content.isEmpty()) {
             Random rn = new Random();
             int cuttingPoint = rn.nextInt(ga.size() - 2);
@@ -28,19 +28,24 @@ public class GeneticArray extends ArrayList<Integer> {
                 this.content.set(i, ga.get(i));
                 ga.set(i, save);
             }
-
+        }
+        else {
+            throw new IndexOutOfBoundsException("crossOverWith: Empty Array");
         }
     }//crossOver
 
-    public void mutate () {
+    public void mutate () throws IndexOutOfBoundsException {
         if (!this.content.isEmpty()) {
             Random rn = new Random();
-            Integer m1 = rn.nextInt(this.content.size() - 1);
-            Integer m2 = rn.nextInt(this.content.size() - 1);
+            int m1 = rn.nextInt(this.content.size() - 1);
+            int m2 = rn.nextInt(this.content.size() - 1);
 
             Integer save = this.content.get(m1);
             this.content.set(m1, this.content.get(m2));
             this.content.set(m2, save);
+        }
+        else {
+            throw new IndexOutOfBoundsException("mutate: Empty Array");
         }
     }//mutate
 
