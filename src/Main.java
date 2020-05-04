@@ -19,19 +19,19 @@ public class Main {
         Scanner in = new Scanner(System.in);
 
         // 4 variables, for the 4 user inputs
-        int popSize = 20;
-        int genNum = 20;
-        int crossOverRate = 40;
-        int mutationRate = 60;
+        int popSize = -1;
+        int genNum = -1;
+        int crossOverRate = -1;
+        int mutationRate = -1;
 
         /*
         * Getting user input part
         */
 
-//        while (popSize < 0) popSize = askPopSize(in);
-//        while (genNum < 0) genNum = askNumberGeneration(in);
-//        while (crossOverRate < 0  || crossOverRate > 100) crossOverRate = askCrossOverRate(in);
-//        while ( (mutationRate < 0 || mutationRate > 100) && crossOverRate + mutationRate <= 100) mutationRate = askMutationRate(in);
+        while (popSize < 0) popSize = askPopSize(in);
+        while (genNum < 0) genNum = askNumberGeneration(in);
+        while (crossOverRate < 0  || crossOverRate > 100) crossOverRate = askCrossOverRate(in);
+        while ( (mutationRate < 0 || mutationRate > 100) && crossOverRate + mutationRate <= 100) mutationRate = askMutationRate(in);
 
         in.close();
 
