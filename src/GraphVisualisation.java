@@ -32,8 +32,8 @@ public class GraphVisualisation extends JFrame {
                 if (this.adjacencyMatrix[this.ordering[i]][this.ordering[j]] == 1) {
                     g.drawLine(( (int) Math.cos(i * this.chunk) * radius) + mov,
                             ( (int) Math.sin(i * this.chunk) * radius) + mov,
-                            ( (int) Math.cos(i * this.chunk) * radius) + mov,
-                            ( (int) Math.sin(i * this.chunk) * radius) + mov);
+                            ( (int) Math.cos(j * this.chunk) * radius) + mov,
+                            ( (int) Math.sin(j * this.chunk) * radius) + mov);
                 }
             }
         }

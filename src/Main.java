@@ -174,6 +174,18 @@ public class Main {
 
         }
 
+        System.out.println(currentPopulation.toString());
+        int [][] currentPopulationMatrix = new int[currentPopulation.size()][currentPopulation.get(0).size()];
+
+        for (int i = 0; i < currentPopulation.size(); ++i) {
+            for (int j = 0; j < currentPopulation.get(0).size(); ++j) {
+                currentPopulationMatrix [i][j] = currentPopulation.get(i).get(j);
+            }
+        }
+
+        // Graphical visualisation
+        GraphVisualisation visualisation = new GraphVisualisation(currentPopulationMatrix, currentPopulationMatrix[0], currentPopulationMatrix[0].length - 1);
+
     }//main
 
 
